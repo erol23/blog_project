@@ -5,18 +5,18 @@ from .models import Category, Post, Comment
 
 class PostForm(forms.ModelForm):
     status = forms.ChoiceField(choices=Post.OPTIONS)
-    category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='Select Category')
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Select Category")
     class Meta:
         model = Post
-        field = (
+        fields = (
             'title',
             'content',
             'image',
             'category',
-            'status',            
+            'status',
         )
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        field('content',)
+        fields = ('content',)
