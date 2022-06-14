@@ -1,3 +1,4 @@
+from distutils.command.upload import upload
 from unicodedata import name
 from django.db import models
 from django.contrib.auth.models import User
@@ -18,7 +19,7 @@ class Post(models.Model):
     )
     title = models.CharField(max_length=100)
     content = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to = "")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     publish_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
