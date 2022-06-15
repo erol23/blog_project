@@ -1,5 +1,5 @@
 from multiprocessing import context
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Post
 from .forms import PostForm
@@ -26,3 +26,21 @@ def post_create(request):
     }
     return render(request, 'blogapp/post_create.html', context)
 
+def post_detail(request, slug):
+    obj = get_object_or_404(Post, slug=slug)
+    context= {
+        "object": obj
+    }
+    return render(request, "blogapp/post_detail.html", context)
+
+def post_update(request, slug):
+    obj = get_object_or_404(Post, slug=slug)
+    form = PostForm(request.POST or None, request.FILES or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect("blogapp:list")
+    context = {
+        "object": obj,
+        "form": form
+    }
+    return render(request, "blogapp/post_update.html", context)
