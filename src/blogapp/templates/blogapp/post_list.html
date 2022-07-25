@@ -15,9 +15,9 @@
                 <p class="card-text">{{obj.content|truncatechars:20}}</p>
                 
                 <p>
-                    <span><i class="far fa-comment-alt ml-2"></i></span>
-                    <span><i class="fas fa-eye ml-2"></i></span>
-                    <span><i class="far fa-heart ml-2"></i></span>
+                    <span><i class="far fa-comment-alt ml-2">{{ obj.comment_count }}</i></span>
+                    <span><i class="fas fa-eye ml-2">{{ obj.view_count }}</i></span>
+                    <span><i class="far fa-heart ml-2">{{ obj.like_count }}</i></span>
                 <p class="card-text"><small>
                         Posted {{ obj.publish_date|timesince }} ago.
                     </small>
