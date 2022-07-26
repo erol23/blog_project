@@ -71,4 +71,6 @@ def like(request, slug):
         like_qs = Like.objects.filter(user=request.user, post=obj)
         if like_qs.exists():
             like_qs[0].delete()
-        Like.objects.create(user=request.user, post=obj)
+        else:
+            Like.objects.create(user=request.user, post=obj)
+        return redirect("blogapp:detail", slug=slug)
