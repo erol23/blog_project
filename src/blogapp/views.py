@@ -1,4 +1,5 @@
 from multiprocessing import context
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .models import Post,Like
@@ -46,6 +47,8 @@ def post_detail(request, slug):
 def post_update(request, slug):
     obj = get_object_or_404(Post, slug=slug)
     form = PostForm(request.POST or None, request.FILES or None, instance=obj)
+    if request.user.id != obj.author.id:
+        return HttpResponse("You're not authorized!")
     if form.is_valid():
         form.save()
         return redirect("blogapp:list")
@@ -57,6 +60,8 @@ def post_update(request, slug):
 
 def post_delete(request, slug):
     obj = get_object_or_404(Post, slug=slug)
+    if request.user.id != obj.author.id:
+        return HttpResponse("You're not authorized!")
     if request.method == "POST":
         obj.delete()
         return redirect("blogapp:list")
