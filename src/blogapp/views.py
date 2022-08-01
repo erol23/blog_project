@@ -2,6 +2,7 @@ from multiprocessing import context
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import Post,Like
 from .forms import CommentForm, PostForm
@@ -23,6 +24,7 @@ def post_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            messages.success(request, "Post created successfully")
             return redirect("blogapp:list")
     context = {
         'form': form
@@ -51,9 +53,11 @@ def post_update(request, slug):
     obj = get_object_or_404(Post, slug=slug)
     form = PostForm(request.POST or None, request.FILES or None, instance=obj)
     if request.user.id != obj.author.id:
-        return HttpResponse("You're not authorized!")
+        messages.warning(request, "You're not a writer of this post")
+        return redirect("blogapp:list")
     if form.is_valid():
         form.save()
+        messages.success(request, "Post updated successfully")
         return redirect("blogapp:list")
     context = {
         "object": obj,
@@ -65,9 +69,11 @@ def post_update(request, slug):
 def post_delete(request, slug):
     obj = get_object_or_404(Post, slug=slug)
     if request.user.id != obj.author.id:
-        return HttpResponse("You're not authorized!")
+        messages.warning(request, "You're not a writer of this post")
+        return redirect("blogapp:list")
     if request.method == "POST":
         obj.delete()
+        messages.success(request, "Post deleted!!")
         return redirect("blogapp:list")
     context = {
         "object": obj
@@ -84,3 +90,4 @@ def like(request, slug):
         else:
             Like.objects.create(user=request.user, post=obj)
         return redirect("blogapp:detail", slug=slug)
+    return redirect("blogapp:detail", slug=slug)
