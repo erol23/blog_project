@@ -1,6 +1,7 @@
 from multiprocessing import context
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
 
 from .models import Post,Like
 from .forms import CommentForm, PostForm
@@ -12,6 +13,7 @@ def post_list(request):
     }
     return render(request, "blogapp/post_list.html", context)
 
+@login_required
 def post_create(request):
     # form = PostForm(request.POST or None, request.POST or None)
     form = PostForm()
@@ -44,6 +46,7 @@ def post_detail(request, slug):
     }
     return render(request, "blogapp/post_detail.html", context)
 
+@login_required
 def post_update(request, slug):
     obj = get_object_or_404(Post, slug=slug)
     form = PostForm(request.POST or None, request.FILES or None, instance=obj)
@@ -58,6 +61,7 @@ def post_update(request, slug):
     }
     return render(request, "blogapp/post_update.html", context)
 
+@login_required
 def post_delete(request, slug):
     obj = get_object_or_404(Post, slug=slug)
     if request.user.id != obj.author.id:
@@ -70,6 +74,7 @@ def post_delete(request, slug):
     }
     return render(request, "blogapp/post_delete.html", context)
 
+@login_required
 def like(request, slug):
     if request.method == "POST":
         obj = get_object_or_404(Post, slug=slug)
